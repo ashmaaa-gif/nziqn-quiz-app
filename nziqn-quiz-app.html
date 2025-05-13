@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZIQN Part A Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    .question { margin-bottom: 20px; }
+    .options { list-style-type: none; padding: 0; }
+    .options li { margin: 10px 0; }
+    .feedback { margin-top: 10px; font-weight: bold; }
+    .navigation { margin-top: 20px; }
+    button { padding: 10px 20px; margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <h1>NZIQN Part A Quiz</h1>
+  <div id="quiz"></div>
+  <div class="navigation">
+    <button onclick="prevQuestion()">Previous</button>
+    <button onclick="nextQuestion()">Next</button>
+  </div>
+  <script>
+    const questions = [
+      {
+        question: "What is the normal range for adult respiratory rate?",
+        options: ["12-20 breaths per minute", "8-14 breaths per minute", "20-30 breaths per minute", "6-10 breaths per minute"],
+        answer: 0,
+        rationale: "The normal adult respiratory rate is between 12 and 20 breaths per minute."
+      },
+      {
+        question: "What does the acronym CPR stand for?",
+        options: ["Cardiac Pulse Rescue", "Cardiopulmonary Resuscitation", "Cardiac Pulmonary Revival", "Circulatory Pressure Rescue"],
+        answer: 1,
+        rationale: "CPR stands for Cardiopulmonary Resuscitation."
+      }
+    ];
+
+    let currentQuestion = parseInt(localStorage.getItem("nziqn_current")) || 0;
+    const quizDiv = document.getElementById("quiz");
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      quizDiv.innerHTML = `
+        <div class="question">
+          <h3>Question ${currentQuestion + 1} of ${questions.length}</h3>
+          <p>${q.question}</p>
+          <ul class="options">
+            ${q.options.map((opt, i) => `
+              <li><label><input type="radio" name="option" value="${i}" onchange="checkAnswer(${i})"> ${opt}</label></li>
+            `).join('')}
+          </ul>
+          <div id="feedback"></div>
+        </div>
+      `;
+    }
+
+    function checkAnswer(selected) {
+      const q = questions[currentQuestion];
+      const feedbackDiv = document.getElementById("feedback");
+      if (selected == q.answer) {
+        feedbackDiv.innerHTML = `<p class='feedback' style='color: green;'>Correct! ${q.rationale}</p>`;
+      } else {
+        feedbackDiv.innerHTML = `<p class='feedback' style='color: red;'>Incorrect. ${q.rationale}</p>`;
+      }
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        localStorage.setItem("nziqn_current", currentQuestion);
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        localStorage.setItem("nziqn_current", currentQuestion);
+        renderQuestion();
+      }
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
